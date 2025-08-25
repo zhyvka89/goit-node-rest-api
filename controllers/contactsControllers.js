@@ -86,21 +86,4 @@ export const updateContact = async (req, res) => {
   } catch (error) {
     next(error);
   }
-  
-  
-  
-  
-  if (updatedContact) {
-    res.json({
-      status: "success",
-      code: 200,
-      data: { updatedContact },
-    });
-  } else {
-    res.status(404).json({
-      status: "error",
-      code: 404,
-      message: "Not found",
-    });
-  }
 };
