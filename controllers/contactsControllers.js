@@ -33,7 +33,7 @@ export const getOneContact = async (req, res, next) => {
     const { id } = req.params;
     const contact = await getContactById(id);
     if (!contact) {
-      HttpError(404, "Not found");
+      next(HttpError(404, "Not found"));
     }
     sendResponse(res, 200, { contact });
   } catch (error) {
@@ -46,7 +46,7 @@ export const deleteContact = async (req, res, next) => {
     const { id } = req.params;
     const removedContact = removeContact(id);
     if (!removedContact) {
-      HttpError(404, "Not found");
+      next(HttpError(404, "Not found"));
     }
     sendResponse(res, 200, { removedContact });
   } catch (error) {
@@ -54,15 +54,15 @@ export const deleteContact = async (req, res, next) => {
   }
 };
 
-export const createContact = async (req, res) => {
+export const createContact = async (req, res, next) => {
   try {
-    const { error } = createContactSchema.validate(req.body);
-    if(error) {
-      throw HttpError(400, error.details[0].message);
-    }
     const { name, email, phone } = req.body;
+    const { error } = createContactSchema.validate(name, email, phone);
+    if(error) {
+      next(HttpError(400, error.details[0].message));
+    }
     const newContact = await addContact(name, email, phone);
-    sendResponse(res, 201, { newContact });
+    sendResponse(res, 201,  newContact );
   } catch (error) {
     next(error);
   }
@@ -71,16 +71,16 @@ export const createContact = async (req, res) => {
 export const updateContact = async (req, res) => {
   try {
     if (Object.keys(req.body).length === 0) {
-      throw HttpError(400, "Body must have at least one field");
+      next(HttpError(400, "Body must have at least one field"));
     }
     const { error } = updateContactSchema.validate(req.body);
     if (error) {
-      throw HttpError(400, error.details[0].message);
+      next(HttpError(400, error.details[0].message));
     }
     const { id } = req.params;
     const updatedContact = await updateContactWithNewFields(id, req.body);
     if (!updatedContact) {
-      throw HttpError(404, "Not found");
+      next(HttpError(404, "Not found"));
     }
     sendResponse(res, 200, { updatedContact });
   } catch (error) {
