@@ -60,8 +60,7 @@ export const createContact = async (req, res, next) => {
     if(error) {
       return next(HttpError(400, error.details[0].message));
     }
-    const { name, email, phone } = req.body;
-    const newContact = await addContact(name, email, phone);
+    const newContact = await addContact(req.body);
     return sendResponse(res, 201,  newContact );
   } catch (error) {
     next(error);
