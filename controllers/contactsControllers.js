@@ -4,6 +4,7 @@ import {
   removeContact,
   addContact,
   updateContact as updateContactWithNewFields,
+  updateStatusContact,
 } from "../services/contactsServices.js";
 import {
   createContactSchema,
@@ -85,4 +86,22 @@ export const updateContact = async (req, res, next) => {
   } catch (error) {
     next(error);
   }
+};
+
+export const updateFavoriteStatus = async (req, res, next) => {
+  try {
+    const { error } = updateContactSchema.validate(req.body);
+    if (error) {
+      return next(HttpError(400, error.details[0].message));
+    }
+    const { id } = req.params;
+    const { favorite } = req.body;
+    const updatedContact = await updateStatusContact(id, favorite);
+    if (!updatedContact) {
+      return next(HttpError(404, "Not found"));
+    }
+    return sendResponse(res, 200, updatedContact );
+  } catch (error) {
+    next(error);
+  } 
 };

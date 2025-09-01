@@ -31,3 +31,13 @@ export async function updateContact(contactId, payload) {
   await contact.update(payload);
   return contact;
 }
+
+export async function updateStatusContact(contactId, favorite) {
+  const contact = await getContactById(contactId);
+  if (!contact) {
+    return null;
+  }
+  contact.favorite = favorite;
+  await contact.save();
+  return contact;
+}
