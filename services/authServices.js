@@ -5,9 +5,9 @@ import HttpError from "../helpers/HttpError";
 
 const { JWT_SECRET } = process.env;
 
-export const register = async (email, password) => {
+export const register = async (username, email, password) => {
   const hashPassword = await bcrypt.hash(password, 10);
-  return User.create({ email, password: hashPassword });
+  return User.create({ username, email, password: hashPassword });
 };
 
 export const login = async (email, password) => {
