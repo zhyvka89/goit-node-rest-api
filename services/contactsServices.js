@@ -1,54 +1,43 @@
-import fs from "node:fs/promises";
-import path from "node:path";
-
-const contactsPath = path.resolve(".", "db", "contacts.json");
+import Contact from "../db/Contact.js";
 
 export async function listContacts() {
-  try {
-    const data = await fs.readFile(contactsPath, 'utf-8');
-    return JSON.parse(data);
-  } catch (error) {
-    console.error("Error reading contacts:", error);
-    return [];
-  }
+  return Contact.findAll();
 }
 
 export async function getContactById(contactId) {
-  const contacts = await listContacts();
-  return contacts.find(contact => contact.id === contactId) || null;
+  return Contact.findByPk(contactId);
 }
 
 export async function removeContact(contactId) {
-  const contacts = await listContacts();
-  const index = contacts.findIndex(contact => contact.id === contactId);
-  if (index === -1) {
+  const contact = await getContactById(contactId);
+  if (!contact) {
     return null;
   }
-  const [removedContact] = contacts.splice(index, 1);
-  await fs.writeFile(contactsPath, JSON.stringify(contacts, null, 2));
-  return removedContact;
+  await contact.destroy();
+  return contact;
 }
 
-export async function addContact(name, email, phone) {
-  const contacts = await listContacts();
-  const newContact = {
-    id: String(contacts.length + 1),
-    name,
-    email,
-    phone
-  };
-  contacts.push(newContact);
-  await fs.writeFile(contactsPath, JSON.stringify(contacts, null, 2));
-  return newContact;
+export async function addContact(payload) {
+  console.log(payload);
+  return Contact.create(payload);
 }
 
-export async function updateContact(contactId, updatedFields) {
-  const contacts = await listContacts();
-  const index = contacts.findIndex(contact => contact.id === contactId);
-  if (index === -1) {
+export async function updateContact(contactId, payload) {
+
+  const contact = await getContactById(contactId);
+  if (!contact) {
     return null;
   }
-  contacts[index] = { ...contacts[index], ...updatedFields };
-  await fs.writeFile(contactsPath, JSON.stringify(contacts, null, 2));
-  return contacts[index];
+  await contact.update(payload);
+  return contact;
+}
+
+export async function updateStatusContact(contactId, favorite) {
+  const contact = await getContactById(contactId);
+  if (!contact) {
+    return null;
+  }
+  contact.favorite = favorite;
+  await contact.save();
+  return contact;
 }
