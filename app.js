@@ -2,6 +2,7 @@ import express from "express";
 import morgan from "morgan";
 import cors from "cors";
 import "dotenv/config";
+import {ValidationError, UniqueConstraintError} from "sequelize"
 
 import contactsRouter from "./routes/contactsRouter.js";
 
@@ -18,6 +19,12 @@ app.use((_, res) => {
 });
 
 app.use((err, req, res, next) => {
+  if (err instanceof ValidationError) {
+    return res.status(400).json({ message: err.message, errors: err.errors });
+  }
+  if (err instanceof UniqueConstraintError) {
+    return res.status(409).json({ message: err.message, errors: err.errors });
+  }
   const { status = 500, message = "Server error" } = err;
   res.status(status).json({ message });
 });

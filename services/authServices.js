@@ -1,0 +1,20 @@
+import User from "../db/User";
+import bcrypt from "bcrypt";
+import HttpError from "../helpers/HttpError";
+
+export const register = async (email, password) => {
+  const hashPassword = await bcrypt.hash(password, 10);
+  return User.create({ email, password: hashPassword });
+};
+
+export const login = async (email, password) => {
+  const user = await User.findOne({ where: { email } });
+  if (!user) {
+    throw HttpError(401, "Email or password is wrong");
+  }
+  const passwordCompare = await bcrypt.compare(password, user.password);
+  if (!passwordCompare) {
+    throw HttpError(401, "Email or password is wrong");
+  }
+  return user;
+};

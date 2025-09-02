@@ -14,9 +14,9 @@ const User = sequelize.define(
       unique: true,
     },
     subscription: {
-        type: DataTypes.ENUM,
-        values: ["starter", "pro", "business"],
-        defaultValue: "starter"
+      type: DataTypes.ENUM,
+      values: ["starter", "pro", "business"],
+      defaultValue: "starter"
     },
     token: {
       type: DataTypes.STRING,
