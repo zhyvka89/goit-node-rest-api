@@ -26,3 +26,12 @@ export const login = async (email, password) => {
   await user.save();
   return user;
 };
+
+export const logout = async (id) => {
+  const user = await User.findOne({ where: { id } });
+  if (!user) {
+    throw HttpError(401, "Not authorized");
+  }
+  await user.update({token: null});
+  return user;
+}

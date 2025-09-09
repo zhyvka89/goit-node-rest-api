@@ -38,3 +38,13 @@ export const loginController = async (req, res, next) => {
     next(error);
   }
 };
+
+export const logoutController = async (req, res, next) => {
+  const { user } = req;
+  try {
+    await logout(user.id);
+    res.status(204).json();
+  } catch (error) {
+    next(error);
+  }
+};
