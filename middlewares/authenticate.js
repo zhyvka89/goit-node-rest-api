@@ -1,10 +1,8 @@
 import HttpError from "../helpers/HttpError.js";
 import { verifyToken } from "../helpers/jwt.js";
-
-import { findUser } from "../services/authServices.js";
+import User from "../db/User.js";
 
 const authenticate = async (req, res, next) => {
-  // const {authorization} = req.headers;
   const authorization = req.get("Authorization");
   if (!authorization) {
     throw HttpError(401, "Authorization header missing");
@@ -19,7 +17,7 @@ const authenticate = async (req, res, next) => {
     throw HttpError(401, error.message);
   }
 
-  const user = await findUser({ id: payload.id });
+  const user = await User.findOne({ where: { id: payload.id } });
   if (!user) {
     throw HttpError(401, "User not found");
   }
