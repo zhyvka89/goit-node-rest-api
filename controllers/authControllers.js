@@ -48,3 +48,15 @@ export const logoutController = async (req, res, next) => {
     next(error);
   }
 };
+
+export const getCurrentController = async (req, res, next) => {
+  const { user } = req;
+  try {
+    res.status(200).json({
+      email: user.email,
+      subscription: user.subscription,
+    });
+  } catch (error) {
+    next(error);
+  }
+};
