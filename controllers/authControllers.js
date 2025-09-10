@@ -1,5 +1,5 @@
-import { register, login } from "../services/authServices";
-import { registerSchema, loginSchema } from "../schemas/authSchemas";
+import { register, login, logout } from "../services/authServices.js";
+import { registerSchema, loginSchema } from "../schemas/authSchemas.js";
 import HttpError from "../helpers/HttpError.js";
 
 export const registerController = async (req, res, next) => {
@@ -51,6 +51,9 @@ export const logoutController = async (req, res, next) => {
 
 export const getCurrentController = async (req, res, next) => {
   const { user } = req;
+  if (!user) {
+    return next(HttpError(401, "Not authorized"));
+  }
   try {
     res.status(200).json({
       email: user.email,

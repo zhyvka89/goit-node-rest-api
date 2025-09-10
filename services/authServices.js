@@ -1,7 +1,7 @@
-import User from "../db/User";
+import User from "../db/User.js";
 import bcrypt from "bcrypt";
 import jwt from "jsonwebtoken";
-import HttpError from "../helpers/HttpError";
+import HttpError from "../helpers/HttpError.js";
 
 const { JWT_SECRET } = process.env;
 

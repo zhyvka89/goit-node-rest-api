@@ -14,7 +14,17 @@ const authenticate = async (req, res, next) => {
 
   const { payload, error } = verifyToken(token);
   if (error) {
-    throw HttpError(401, error.message);
+      let message = "Not authorized";
+
+    if (error.name === "TokenExpiredError") {
+      message = "Token expired, please log in again";
+    } else if (error.name === "JsonWebTokenError") {
+      message = "Invalid token format";
+    } else if (error.name === "NotBeforeError") {
+      message = "Token not active yet";
+    }
+
+    return next(HttpError(401, message));
   }
 
   const user = await User.findOne({ where: { id: payload.id } });
