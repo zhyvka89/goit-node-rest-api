@@ -20,7 +20,7 @@ const Contact = sequelize.define(
       type: DataTypes.BOOLEAN,
       defaultValue: false,
     },
-      owner: {
+    owner: {
       type: DataTypes.INTEGER,
       allowNull: false,
     }
