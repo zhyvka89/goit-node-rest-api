@@ -40,9 +40,12 @@ export const loginController = async (req, res, next) => {
 };
 
 export const logoutController = async (req, res, next) => {
-  const { user } = req;
   try {
-    await logout(user.id);
+    const { user } = req;
+    const result = await logout(user.id);
+    if (!result) {
+      return next(HttpError(401, "Not authorized"));
+    }
     res.status(204).json();
   } catch (error) {
     next(error);

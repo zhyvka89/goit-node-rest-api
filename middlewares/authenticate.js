@@ -28,8 +28,8 @@ const authenticate = async (req, res, next) => {
   }
 
   const user = await User.findOne({ where: { id: payload.id } });
-  if (!user) {
-    throw HttpError(401, "User not found");
+  if (!user || user.token !== token) {
+   next(HttpError(401));
   }
   req.user = user;
   next();

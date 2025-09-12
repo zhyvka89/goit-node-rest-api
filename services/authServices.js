@@ -30,8 +30,8 @@ export const login = async (email, password) => {
 export const logout = async (id) => {
   const user = await User.findOne({ where: { id } });
   if (!user) {
-    throw HttpError(401, "Not authorized");
+    return null;
   }
   await user.update({token: null});
-  return user;
+  return true;
 }
