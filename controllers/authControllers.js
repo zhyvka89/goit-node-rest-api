@@ -15,6 +15,7 @@ export const registerController = async (req, res, next) => {
         username: newUser.username,
         email: newUser.email,
         subscription: newUser.subscription,
+        avatarURL: newUser.avatarURL,
       },
     });
   } catch (error) {

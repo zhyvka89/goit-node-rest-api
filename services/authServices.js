@@ -2,12 +2,14 @@ import User from "../db/User.js";
 import bcrypt from "bcrypt";
 import jwt from "jsonwebtoken";
 import HttpError from "../helpers/HttpError.js";
+import dravatar from "dravatar";
 
 const { JWT_SECRET } = process.env;
 
 export const register = async (username, email, password) => {
   const hashPassword = await bcrypt.hash(password, 10);
-  return User.create({ username, email, password: hashPassword });
+  const avatar = dravatar(email, { s: "250", d: "retro" });
+  return User.create({ username, email, password: hashPassword, avatarURL: avatar});
 };
 
 export const login = async (email, password) => {
