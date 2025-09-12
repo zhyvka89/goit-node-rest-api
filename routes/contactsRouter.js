@@ -7,14 +7,16 @@ import {
   updateContact,
   updateFavoriteStatus,
 } from "../controllers/contactsControllers.js";
+import authenticate from "../middlewares/authenticate.js";
 
 const contactsRouter = express.Router();
+contactsRouter.use(authenticate);
 
 contactsRouter.get("/", getAllContacts);
 
 contactsRouter.get("/:id", getOneContact);
 
-contactsRouter.delete("/:id", deleteContact);
+contactsRouter.delete("/:id", deleteContact); 
 
 contactsRouter.post("/", createContact);
 

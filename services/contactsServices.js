@@ -1,15 +1,21 @@
+import { where } from "sequelize";
 import Contact from "../db/Contact.js";
 
-export async function listContacts() {
-  return Contact.findAll();
+export async function listContacts(userId) {
+  return Contact.findAll({where: {
+    owner: userId,
+  }});
 }
 
-export async function getContactById(contactId) {
-  return Contact.findByPk(contactId);
+export async function getContactById(contactId, userId) {
+  return Contact.findOne({where: {
+    id: contactId,
+    owner: userId,
+  }});
 }
 
-export async function removeContact(contactId) {
-  const contact = await getContactById(contactId);
+export async function removeContact(contactId, userId) {
+  const contact = await getContactById(contactId, userId);
   if (!contact) {
     return null;
   }
@@ -17,14 +23,13 @@ export async function removeContact(contactId) {
   return contact;
 }
 
-export async function addContact(payload) {
-  console.log(payload);
-  return Contact.create(payload);
+export async function addContact(payload, userId) {
+  return Contact.create({ ...payload, owner: userId });
 }
 
-export async function updateContact(contactId, payload) {
+export async function updateContact(contactId, payload, userId) {
 
-  const contact = await getContactById(contactId);
+  const contact = await getContactById(contactId, userId);
   if (!contact) {
     return null;
   }
@@ -32,8 +37,8 @@ export async function updateContact(contactId, payload) {
   return contact;
 }
 
-export async function updateStatusContact(contactId, favorite) {
-  const contact = await getContactById(contactId);
+export async function updateStatusContact(contactId, favorite, userId) {
+  const contact = await getContactById(contactId, userId);
   if (!contact) {
     return null;
   }
