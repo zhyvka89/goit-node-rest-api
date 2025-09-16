@@ -2,13 +2,16 @@ import User from "../db/User.js";
 import bcrypt from "bcrypt";
 import jwt from "jsonwebtoken";
 import HttpError from "../helpers/HttpError.js";
-import dravatar from "dravatar";
+import path from "node:path";
+import gravatar from "gravatar";
+import fs from "node:fs/promises";
 
 const { JWT_SECRET } = process.env;
+const avatarsDir = path.resolve("public", "avatars");
 
 export const register = async (username, email, password) => {
   const hashPassword = await bcrypt.hash(password, 10);
-  const avatar = dravatar(email, { s: "250", d: "retro" });
+  const avatar = gravatar.url(email, { s: "250", d: "retro" });
   return User.create({ username, email, password: hashPassword, avatarURL: avatar});
 };
 
@@ -36,4 +39,19 @@ export const logout = async (id) => {
   }
   await user.update({token: null});
   return true;
+}
+
+export const uploadAvatar = async (id, file) => {
+  const user = await User.findOne({ where: { id } });
+  if (!user) {
+    return null;
+  }
+  let avatar = null;
+  if(file) {
+    const newPath = path.join(avatarsDir, file.filename);
+    await fs.rename(file.path, newPath);
+    avatar = path.join("avatars", file.filename);
+  }
+  await user.update({avatarURL: avatar});
+  return user;
 }

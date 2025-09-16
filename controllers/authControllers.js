@@ -1,4 +1,4 @@
-import { register, login, logout } from "../services/authServices.js";
+import { register, login, logout, uploadAvatar } from "../services/authServices.js";
 import { registerSchema, loginSchema } from "../schemas/authSchemas.js";
 import HttpError from "../helpers/HttpError.js";
 
@@ -67,3 +67,18 @@ export const getCurrentController = async (req, res, next) => {
     next(error);
   }
 };
+
+export const uploadAvatarController = async (req, res, next) => {
+  const { user, file } = req;
+  if (!user) {
+    return next(HttpError(401, "Not authorized"));
+  }
+  try {
+    const updatedUser = await uploadAvatar(user.id, file);
+    res.status(200).json({
+      avatarURL: updatedUser.avatarURL,
+    });
+  } catch (error) {
+    next(error);
+  }
+}
