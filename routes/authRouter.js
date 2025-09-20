@@ -1,5 +1,5 @@
 import express from 'express';
-import { registerController, loginController, logoutController, getCurrentController, uploadAvatarController } from '../controllers/authControllers.js';
+import { registerController, loginController, logoutController, getCurrentController, uploadAvatarController, resendVerifyController, verifyController } from '../controllers/authControllers.js';
 import authenticate from '../middlewares/authenticate.js';
 import upload from '../middlewares/upload.js';
 
@@ -7,9 +7,9 @@ const authRouter = express.Router();
 
 authRouter.post('/register', registerController);
 
-authRouter.post('/verify', );
+authRouter.post('/verify', resendVerifyController);
 
-authRouter.get('/verify/:verificationToken', );
+authRouter.get('/verify/:verificationToken', verifyController);
 
 authRouter.post('/login', loginController);
 

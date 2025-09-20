@@ -34,6 +34,10 @@ export const verifyController = async(req, res)=> {
 }
 
 export const resendVerifyController = async(req, res)=> {
+  const { error } = verifySchema.validate(req.body);
+  if (error) {
+    return next(HttpError(400, error.details[0].message));
+  }
   await resendVerifyUser(req.body);
 
   res.status(200).json({

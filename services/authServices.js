@@ -37,10 +37,12 @@ export const register = async (username, email, password) => {
 
 export const resendVerifyUser = async ({ email }) => {
   const user = await User.findOne({ where: { email } });
-  if (!user || user.verify) {
-    throw HttpError(401, "User not found or already verified");
+  if (!user) {
+    throw HttpError(404, "User not found");
   }
-
+  if (user.verify) {
+    throw HttpError(400, "Verification has already been passed");
+  }
   const verifyEmail = createVerifyEmail({
     verificationToken: user.verificationToken,
     email,
