@@ -1,6 +1,7 @@
 import { register, login, logout, uploadAvatar } from "../services/authServices.js";
 import { registerSchema, loginSchema } from "../schemas/authSchemas.js";
 import HttpError from "../helpers/HttpError.js";
+import { verifyUser } from "../services/authServices.js";
 
 export const registerController = async (req, res, next) => {
   const { username, email, password } = req.body;
@@ -22,6 +23,23 @@ export const registerController = async (req, res, next) => {
     next(error);
   }
 };
+
+export const verifyController = async(req, res)=> {
+  const {verificationToken} = req.params;
+  await verifyUser(verificationToken);
+
+  res.status(200).json({
+    message: "Verification successful"
+  });
+}
+
+export const resendVerifyController = async(req, res)=> {
+  await resendVerifyUser(req.body);
+
+  res.status(200).json({
+      message: "Verify email resend successfully"
+  })
+}
 
 export const loginController = async (req, res, next) => {
   const { email, password } = req.body;

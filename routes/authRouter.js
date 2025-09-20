@@ -7,11 +7,16 @@ const authRouter = express.Router();
 
 authRouter.post('/register', registerController);
 
+authRouter.post('/verify', );
+
+authRouter.get('/verify/:verificationToken', );
+
 authRouter.post('/login', loginController);
 
 authRouter.post('/logout', authenticate, logoutController);
 
 authRouter.get('/current', authenticate, getCurrentController);
+
 authRouter.patch('/avatars', authenticate, upload.single('avatar'), uploadAvatarController);
 
 export default authRouter;
