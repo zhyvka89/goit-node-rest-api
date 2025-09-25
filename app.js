@@ -2,7 +2,7 @@ import express from "express";
 import morgan from "morgan";
 import cors from "cors";
 import "dotenv/config";
-import {ValidationError, UniqueConstraintError} from "sequelize"
+import { ValidationError, UniqueConstraintError } from "sequelize";
 
 import contactsRouter from "./routes/contactsRouter.js";
 import authRouter from "./routes/authRouter.js";
